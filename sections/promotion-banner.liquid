@@ -1,0 +1,98 @@
+
+<div class="promotion_banner">
+    <div class="promotion_banner_wrapper">
+        <div class="promotion_banner_blocks">
+            {% for block in section.blocks %}
+                <div class="promotion_banner_blocks_item">
+                    <div>{{block.settings.svg}}</div>
+                    <p>{{block.settings.text}}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% schema %}
+{
+    "name": "Promotion banner",
+    "settings": [
+        {
+            "type": "color",
+            "id": "background_color",
+            "label": "Promotion bar background color",
+            "default": "#F2FFC2"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "Promotion bar text color",
+            "default": "#000000"
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "label": "Padding top",
+            "unit": "px",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "default": 13
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom",
+            "label": "Padding bottom",
+            "unit": "px",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "default": 13
+        },
+        {
+            "type": "range",
+            "id": "padding_top_mobile",
+            "label": "Padding top mobile",
+            "unit": "px",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "default": 13
+        },
+        {
+            "type": "range",
+            "id": "padding_bottom_mobile",
+            "label": "Padding bottom mobile",
+            "unit": "px",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "default": 13
+        }
+    ],
+    "blocks": [
+        {
+            "type": "item",
+            "name": "Pomotion item",
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "text",
+                    "label": "Pomotion item text",
+                    "default": "Free Delivery on all UK Orders over £65"
+                },
+                {
+                    "type": "html",
+                    "id": "svg",
+                    "label": "Pomotion item SVG"
+                }
+            ]
+        }   
+    ],
+    "presets": [
+        {
+            "category": "header-group",
+            "name":"Promotion banner"
+        }
+    ]
+}
+{% endschema %}

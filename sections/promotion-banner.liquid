@@ -1,16 +1,129 @@
+{% style %}
+    .promotion_banner_wrapper{
+        padding-top: {{section.settings.padding_top}}px;
+        padding-bottom: {{section.settings.padding_bottom}}px;
+    }
+    .promotion_banner{
+        background-color: {{section.settings.background_color}};
+    }
+    .promotion_banner_blocks_item{
+        color: {{section.settings.text_color}};
+    }
+    .promotion_banner_blocks_item div, .promotion_banner_blocks_item a{
+        background-color: {{section.settings.item_image_color}};
+    }
+    @media screen and (max-width: 750px){
+        .promotion_banner_wrapper{
+            padding-top: {{section.settings.padding_top_mobile}}px;
+            padding-bottom: {{section.settings.padding_bottom_mobile}}px;
+        }
+    }
+{% endstyle %}
+
+<style>
+    .promotion_banner_wrapper{
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        overflow: hidden;
+        transition: all .3s ease-in-out;
+    }
+    .promotion_banner_blocks{
+        transition-timing-function: linear !important;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+    .promotion_banner_blocks_item{
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        max-width: 360px;
+        width: 100%;
+        min-width: 360px;
+        text-decoration: none;
+    }
+    .promotion_banner_blocks_item p{
+        margin: 0;
+        font-size: 15px;
+        line-height: 18px;
+        white-space: nowrap;
+    }
+    .promotion_banner_blocks_item div{
+        display: flex;
+        text-decoration: none;
+        align-items: center;
+        justify-content: center;
+        width: 29px;
+        height: 29px;
+        margin: 0 5px 0 0;
+        border-radius: 50%;
+    }
+    .promotion_banner_wrapper_hidden{
+        opacity: 0;
+        transition: all .3s ease-in-out;
+    }
+</style>
 
 <div class="promotion_banner">
-    <div class="promotion_banner_wrapper">
+    <div class="promotion_banner_wrapper promotion_banner_wrapper_hidden">
         <div class="promotion_banner_blocks">
             {% for block in section.blocks %}
-                <div class="promotion_banner_blocks_item">
-                    <div>{{block.settings.svg}}</div>
-                    <p>{{block.settings.text}}</p>
-                </div>
+                {% if block.settings.enabled == true %}
+                    {% if block.settings.url != blank %}
+                        <a href="{{block.settings.url}}" class="promotion_banner_blocks_item">
+                    {% else %}
+                        <div class="promotion_banner_blocks_item">
+                    {% endif %}
+                        <div>{{block.settings.svg}}</div>
+                        <p>{{block.settings.text}}</p>
+                    {% if block.settings.url != blank %}
+                        </a>
+                    {% else %}
+                        </div>
+                    {% endif %}
+                {% endif %}
             {% endfor %}
         </div>
     </div>
 </div>
+
+
+
+<script>
+    let totalBlocksSize = parseInt('{{section.blocks.size}}')
+    let scrollSpeed = parseFloat('{{section.settings.scroll_speed}}')
+    console.log(scrollSpeed);
+
+    function Marquee(selector, speed) {
+        const parentSelector = document.querySelector(selector);
+        const clone = parentSelector.innerHTML;
+        const firstElement = parentSelector.children[0];
+        let i = 0;
+        parentSelector.insertAdjacentHTML('beforeend', clone);
+        parentSelector.insertAdjacentHTML('beforeend', clone);
+
+
+       setTimeout(() => {
+        document.querySelectorAll('.promotion_banner_wrapper').forEach(banner => {
+            banner.classList.remove('promotion_banner_wrapper_hidden')
+        })
+       }, 500);
+
+        setInterval(function () {
+            firstElement.style.marginLeft = `-${i}px`;
+            if (i > firstElement.clientWidth) {
+            i = 0;
+            }
+            i = i + speed;
+        }, 0);
+    }
+
+    document.addEventListener('DOMContentLoaded', Marquee('.promotion_banner_wrapper', scrollSpeed))
+
+
+</script>
 
 {% schema %}
 {
@@ -27,6 +140,22 @@
             "id": "text_color",
             "label": "Promotion bar text color",
             "default": "#000000"
+        },
+        {
+            "type": "color",
+            "id": "item_image_color",
+            "label": "Promotion bar image background color",
+            "default": "#E8F8B0"
+        },
+        {
+            "type": "range",
+            "id": "scroll_speed",
+            "label": "Scroll speed",
+            "unit": "s",
+            "min": 0.1,
+            "max": 2,
+            "step": 0.1,
+            "default": 0.3
         },
         {
             "type": "range",
@@ -84,6 +213,17 @@
                     "type": "html",
                     "id": "svg",
                     "label": "Pomotion item SVG"
+                },
+                {
+                    "type": "url",
+                    "id": "url",
+                    "label": "Item link (optional)"
+                },
+                {
+                    "type": "checkbox",
+                    "id": "enabled",
+                    "label": "Show element",
+                    "default": true
                 }
             ]
         }   
